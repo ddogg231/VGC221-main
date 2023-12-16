@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/Image.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
 #include "FPSUserwidget.generated.h"
@@ -18,19 +19,35 @@ class VGC221_API UFPSUserwidget : public UUserWidget
 
 public:
 	virtual void NativeConstruct() override;
+
+	UFUNCTION()
+	void SetHealthBar(float currentHealth, float MaxHealth);
 	
-	UPROPERTY(meta = (BindWidget))
+	UFUNCTION()
+	void SetCurrentAmmoCount(int currentAmmo);
+
+	UFUNCTION()
+	void SetReservedAmmoCount(int reservedAmmo);
+	
+	UPROPERTY(EditAnywhere ,meta = (BindWidget))
 	UProgressBar* HealthBar;
 	
-	UPROPERTY(meta = (BindWidget))
-	UTextBlock* ScoreCounter;
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UTextBlock* CurrentAmmoCounter;
 	
-	UFUNCTION()
-	void SetHealthBar(float percentage);
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UTextBlock* ResevedAmmoCounter;
 
-	UFUNCTION()
-	void SetScoreCounter(int ammo);
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UImage* CrossHairTop;
 
-private:
-	int UIscore = 0;
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UImage* CrossHairRight;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UImage* CrossHairLeft;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UImage* CrossHairBottom;
+	
 };

@@ -5,21 +5,23 @@
 
 void UFPSUserwidget::NativeConstruct()
 {
-	SetHealthBar(1.0);
-	SetScoreCounter(0);
+	
+
 }
 
-void UFPSUserwidget::SetHealthBar(float percentage)
+void UFPSUserwidget::SetHealthBar(float currentHealth, float maxHealth)
 {
 	if(!HealthBar) return;
 
-	HealthBar->SetPercent(percentage);
+	HealthBar->SetPercent(currentHealth / maxHealth);
 }
 
-void UFPSUserwidget::SetScoreCounter(int score)
+void UFPSUserwidget::SetCurrentAmmoCount(int currentAmmo)
 {
-	if(!ScoreCounter) return;
-
-	UIscore += score;
-	ScoreCounter->SetText(FText::FromString("Score: " + FString::FromInt(UIscore)));
 }
+
+void UFPSUserwidget::SetReservedAmmoCount(int reservedAmmo)
+{
+}
+
+
