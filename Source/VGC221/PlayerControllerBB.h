@@ -17,7 +17,7 @@ UCLASS(Abstract)
 class VGC221_API APlayerControllerBB : public APlayerController
 {
 public:
-	
+#pragma region  Enhancedinput Setup
 	//The Input Action to map to movement.
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Input|Character Movement")
 	UInputAction* ActionIA_Move = nullptr;
@@ -42,11 +42,16 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Input|Character Weapons")
 	UInputAction* ActionIA_PrimaryFire = nullptr;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Input|Character Weapons")
+	UInputAction* ActionIA_Aiming = nullptr;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Input|Character Weapons")
+	UInputAction* ActionIA_DropHeldItem = nullptr;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Input|Character Movement")
 	UInputMappingContext* InputMappingContext = nullptr;
-
+#pragma  endregion 
+	
 	
 protected:
 	void HandleLook(const FInputActionValue& InputActionValue);
@@ -54,7 +59,11 @@ protected:
 	void HandleJump();
 	void HandleToggleSprint();
 	void HandleToggleCrouch();
-	void HandleFire();
+	void HandleFirePressed();
+	void HandleFireReleased();
+	void HandleAimingIn();
+	void HandleAimOut();
+	void HandleDropItem();
 	
 	virtual void OnPossess(APawn* aPawn) override;
 	virtual void OnUnPossess() override;

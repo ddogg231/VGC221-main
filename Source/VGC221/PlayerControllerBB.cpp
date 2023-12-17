@@ -10,7 +10,7 @@ void APlayerControllerBB::OnPossess(APawn* aPawn)
 	// Store a reference to the Player's Pawn
 	PlayerCharacter = Cast<AFPSCharacter>(aPawn);
 	checkf(PlayerCharacter,
-	       TEXT("APlayerControllerBBBase derived classes should only posess ACharacterBBBase derived pawns"));
+	       TEXT("APlayerControllerBB derived classes should only posess ACharacterBB derived pawns"));
 
 	// Get a reference to the EnhancedInputComponent
 	EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent);
@@ -48,12 +48,28 @@ void APlayerControllerBB::OnPossess(APawn* aPawn)
 		                                   &APlayerControllerBB::HandleToggleCrouch);
 
 	if (ActionIA_PrimaryFire)
-		EnhancedInputComponent->BindAction(ActionIA_PrimaryFire, ETriggerEvent::Triggered, this,
-										   &APlayerControllerBB::HandleFire);
+		EnhancedInputComponent->BindAction(ActionIA_PrimaryFire, ETriggerEvent::Started, this,
+										   &APlayerControllerBB::HandleFirePressed);
+
+	if (ActionIA_PrimaryFire)
+		EnhancedInputComponent->BindAction(ActionIA_PrimaryFire, ETriggerEvent::Completed, this,
+										   &APlayerControllerBB::HandleFireReleased);
 	
 	if (ActionIA_ToggleSprint)
 		EnhancedInputComponent->BindAction(ActionIA_ToggleSprint, ETriggerEvent::Triggered, this,
 		                                   &APlayerControllerBB::HandleToggleSprint);
+
+	if (ActionIA_Aiming)
+		EnhancedInputComponent->BindAction(ActionIA_Aiming, ETriggerEvent::Started, this,
+										   &APlayerControllerBB::HandleAimingIn);
+
+	if (ActionIA_Aiming)
+		EnhancedInputComponent->BindAction(ActionIA_Aiming, ETriggerEvent::Completed, this,
+										   &APlayerControllerBB::HandleAimOut);
+
+	if (ActionIA_DropHeldItem)
+		EnhancedInputComponent->BindAction(ActionIA_DropHeldItem, ETriggerEvent::Triggered, this,
+										   &APlayerControllerBB::HandleDropItem);
 }
 
 void APlayerControllerBB::HandleLook(const FInputActionValue& InputActionValue)
@@ -61,10 +77,16 @@ void APlayerControllerBB::HandleLook(const FInputActionValue& InputActionValue)
 	// Input is a Vector2D
 	const FVector2D LookAxisVector = InputActionValue.Get<FVector2D>();
 
-	float sensitvly = 5.0f;
-	// Add yaw and pitch input to controller
-	AddYawInput(LookAxisVector.X);
-	AddPitchInput(LookAxisVector.Y);
+	// Adjust this value to control the camera sensitivity
+	float Sensitivity = 0.5f;
+
+	// Update the rotation based on the mouse input
+	FRotator NewRotation = GetControlRotation();
+	NewRotation.Yaw += LookAxisVector.X * Sensitivity;
+	NewRotation.Pitch += LookAxisVector.Y * Sensitivity;
+
+	// Set the new rotation for the player controller
+	SetControlRotation(NewRotation);
 }
 
 
@@ -105,9 +127,29 @@ void APlayerControllerBB::HandleToggleCrouch()
 		PlayerCharacter->Crouch();
 }
 
-void APlayerControllerBB::HandleFire()
+void APlayerControllerBB::HandleFirePressed()
 {
 	PlayerCharacter->Fire();
+}
+
+void APlayerControllerBB::HandleFireReleased()
+{
+	PlayerCharacter->StopFiring();
+}
+
+void APlayerControllerBB::HandleAimingIn()
+{
+	PlayerCharacter->AimIn();
+}
+
+void APlayerControllerBB::HandleAimOut()
+{
+	PlayerCharacter->AimOut();
+}
+
+void APlayerControllerBB::HandleDropItem()
+{
+	PlayerCharacter->DropCurrentItem();
 }
 
 
